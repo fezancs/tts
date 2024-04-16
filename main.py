@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware 
 
 from fastapi.responses import FileResponse
 
@@ -11,10 +12,22 @@ from scipy.io.wavfile import write
 from pydantic import BaseModel  # Import BaseModel from pydantic
 
 import os
-
+import uvicorn 
 
 
 app = FastAPI()
+
+
+
+origins = ['*']
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+) 
 
 
 
@@ -63,3 +76,8 @@ def synthesize_text(request_body: SynthesizeRequest):  # Use the Pydantic model 
     write(file_path, sample_rate, output.cpu().numpy()[0])
 
     return FileResponse(file_path, media_type="audio/wav", filename="output.wav")
+
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host='0.0.0.0', port=8000)
