@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+torchvision
+transformers
+scipy
